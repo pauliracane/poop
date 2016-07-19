@@ -1,6 +1,7 @@
 #!/usr/local/bin/python
 
 import struct
+import math
 
 class Node:
     def __init__(self, data, left, right):
@@ -41,7 +42,14 @@ class Liquid:
 
 
     def treat_pb(self):
-        pass
+        for key, each in self.data.items():
+            n = (math.sqrt(1+8*each[0]) - 1)/2
+            n = int(n)
+            total = (n*(n+1))/2
+            if total == each[0]:
+                #Remove Thingo Make Air.
+                self.hazmat.add(each[0])
+                each[0]=0
 
     def treat_hg(self):
         '''Multiple roots in graph'''
