@@ -100,12 +100,12 @@ while(accept(NEW,INC)) {
 		# If a > b
 		if($data{$a}[0] > $data{$b}[0]) {
 			# undll it
-			undll$b;
+			undll($b);
 			# remove $b
 			undef$head{$b};
 		} else {
 			# undll it
-			undll$a;
+			undll($a);
 			# remove $a
 			undef$head{$a};
 		}
@@ -121,7 +121,7 @@ while(accept(NEW,INC)) {
 	# while $head is true
 	while($head) {
 		# If the data is prime (Feces) or undulating (Ammonia)
-		if(is_prime($$head[0]) | is_undu($head->[0]) | ($head->[0]<10 & $head->[0]>0)) {
+		if(is_prime($$head[0]) || is_undu($head->[0]) || ($head->[0]<10 && $head->[0]>0)) {
 			# Connect to Sludge.  Send data to sludge.
 			# Sludger will remove data and send it along.
 			# Open poop chute
