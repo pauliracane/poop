@@ -121,7 +121,7 @@ while(accept(NEW,INC)) {
 	# while $head is true
 	while($head) {
 		# If the data is prime (Feces) or undulating (Ammonia)
-		if(is_prime($$head[0]) || is_undu($head->[0]) || ($head->[0]<10 && $head->[0]>0)) {
+		if(is_prime($$head[0]) || is_undu($head->[0])) {#|| ($head->[0]<10 && $head->[0]>0)) {
 			# Connect to Sludge.  Send data to sludge.
 			# Sludger will remove data and send it along.
 			# Open poop chute
@@ -147,7 +147,7 @@ while(accept(NEW,INC)) {
 			$aircounter += 1;
 			if ( $aircounter == 25 ) {
 				$aircounter = 0;
-				$$head[0] == 0;
+				$$head[0] = 0;
 			}
 		}
 		push @final, $head;
