@@ -69,11 +69,12 @@ int main(void)
 			perror("Could not connect downstream");
 			goto done;
 		}
-
-		write(owater, &head, sizeof(head));
-		// First node is empty just to make offsets easier
-		write(owater, payload + 1, bytes_to_read);
-
+		if ( payload )
+		{
+			write(owater, &head, sizeof(head));
+			// First node is empty just to make offsets easier
+			write(owater, payload + 1, bytes_to_read);
+		}
 		close(owater);
 
 done:

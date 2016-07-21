@@ -73,10 +73,11 @@ printf("'%s'\n", buf);
 			perror("Could not connect downstream");
 			goto done;
 		}
-
-		write(osludge, &head, sizeof(head));
-		write(osludge, hashes, items * sizeof(*hashes));
-
+		if ( hashes )
+		{
+			write(osludge, &head, sizeof(head));
+			write(osludge, hashes, items * sizeof(*hashes));
+		}
 		close(osludge);
 
 done:
