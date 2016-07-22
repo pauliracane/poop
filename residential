@@ -12,7 +12,7 @@ my $me = shift;
 sub is_prime{$;=pop;for(2..($;**0.5)){return unless$;%$_;}$;;}
 use Socket;
 socket(INC, PF_INET, SOCK_STREAM, (getprotobyname('tcp'))[2]);
-bind(INC,pack_sockaddr_in(1111,inet_aton("10.0.$me.66")));
+bind(INC,pack_sockaddr_in(1112,inet_aton("10.0.$me.66")));
 setsockopt(INC,SOL_SOCKET,SO_RCVTIMEO,2);
 
 # listen on INC
