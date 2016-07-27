@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 # This splits incoming wastewater into feces/urine and wastewater, sending the
 # outgoing streams to treatment plant
 
@@ -12,7 +12,7 @@ my $me = shift;
 sub is_prime{$;=pop;for(2..($;**0.5)){return unless$;%$_;}$;;}
 use Socket;
 socket(INC, PF_INET, SOCK_STREAM, (getprotobyname('tcp'))[2]);
-bind(INC,pack_sockaddr_in(1112,inet_aton("10.0.$me.66")));
+bind(INC,pack_sockaddr_in(1112,inet_aton("10.0.$me.235")));
 setsockopt(INC,SOL_SOCKET,SO_RCVTIMEO,2);
 
 # listen on INC
@@ -117,11 +117,11 @@ while(accept(NEW,INC)) {
 	my $head = $data{$data};
 	
 	# final array
-	my @final;
+	my @final = ();
 	# while $head is true
 	while($head) {
 		# If the data is prime (Feces) or undulating (Ammonia)
-		if(is_prime($$head[0]) || is_undu($head->[0])) {#|| ($head->[0]<10 && $head->[0]>0)) {
+		if((is_prime($head->[0]) || is_undu($head->[0])) || ($head->[0]<10 && $head->[0]>0)) {
 			# Connect to Sludge.  Send data to sludge.
 			# Sludger will remove data and send it along.
 			# Open poop chute
@@ -205,7 +205,7 @@ sub undll($) {
 
 sub is_undu{
 
-	# $_ = sprintf "%u", pop;0;
+	$_ = sprintf "%u", pop;0;
 	# http://codegolf.stackexchange.com/questions/3134/undulant-numbers
 	return /^(?:(.)(?{local$a=$1}))?(?:(?>((.)(?(?{$a lt$3})(?{local$a=$3})|(?!)))((.)(?(?{$a gt$5})(?{local$a=$5})|(?!))))*(?2)?)(?(?{pos>1})|(?!))$/
 	# These dont work yet
