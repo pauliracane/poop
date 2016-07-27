@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <arpa/inet.h>
 
@@ -9,6 +10,7 @@
 
 int main(void)
 {
+	srand(time(NULL)); //Seed Random.  
 
 	int isludge = listen_incoming("1111");
 	if(isludge < 0) {
@@ -28,8 +30,7 @@ int main(void)
 		}
 		if((size_t)received_bytes < sizeof(head)) {
 			// TODO: Should log this and send a report packet
-			fprintf(stderr, "Did not receive a full header (%zd/%zu)\n",
-					received_bytes, sizeof(head));
+			fprintf(stderr, "Did not receive a full header (%zd/%zu)\n", received_bytes, sizeof(head));
 			close(new_stream);
 			continue;
 		}
@@ -63,7 +64,7 @@ int main(void)
 		}
 
 		// Since nothing about the payload has changed, it can be just sent back out again
-		printf("Connecting to downstream\n");
+		// printf("Connecting to downstream\n");
 		int owater = connect_outgoing("downstream", "1111");
 		if(owater < 0) {
 			perror("Could not connect downstream");
@@ -73,7 +74,10 @@ int main(void)
 		{
 			write(owater, &head, sizeof(head));
 			// First node is empty just to make offsets easier
-			write(owater, payload + 1, bytes_to_read);
+			int errcode = write(owater, payload + 1, bytes_to_read);
+			if ( errcode < 0 ){
+				perror("Fuck this");
+			}
 		}
 		close(owater);
 
