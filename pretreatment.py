@@ -22,6 +22,11 @@ while True:
     while len(buf) < header.size - 8:
         buf += client.recv(header.size - 8 - len(buf))
 
+    liquid = Liquid(buf)
+    
+    liquid.treat_fungi()
+    print("Found {} after fungus".format(len(liquid.hazmats)))
+
     # Find out if trash; 2 for data, 1 for l, 1 for right.
     # If L or R point to # > header.size-8 / 4; scrap packet.
     # Needs to use structs.  Not sure how.  Oh well.
@@ -43,7 +48,6 @@ while True:
     if ( not buf):
         continue;
 
-    liquid = Liquid(buf)
 
     liquid.treat_hg()
     print("Found {} after mercury".format(len(liquid.hazmats)))

@@ -69,6 +69,16 @@ class Liquid:
             del self.data[i]
             self.treat_hg()
 
+    def treat_fungi(self):
+        for key, each in self.data.items():
+            n = math.sqrt(5*(each[0]*each[0])+4)
+            m = math.sqrt(5*(each[0]*each[0])-4)
+            if(n.is_integer() or m.is_integer()):
+                if each[0] != 0:
+                    #Remove Thingo Make Air.
+                    self.hazmat.add(each[0])
+                    each[0]=0
+
     def serialize_water(self):
         for n in range(self.slots):
             n += 1
