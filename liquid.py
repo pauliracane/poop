@@ -48,7 +48,7 @@ class Liquid:
             total = (n*(n+1))/2
             if total == each[0]:
                 #Remove Thingo Make Air.
-                self.hazmat.add(each[0])
+                self.hazmats.add(each[0])
                 each[0]=0
 
     def treat_hg(self):
@@ -76,7 +76,7 @@ class Liquid:
             if(n.is_integer() or m.is_integer()):
                 if each[0] != 0:
                     #Remove Thingo Make Air.
-                    self.hazmat.add(each[0])
+                    self.hazmats.add(each[0])
                     each[0]=0
 
     def serialize_water(self):

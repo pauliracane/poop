@@ -68,7 +68,7 @@ while True:
     hazmat_outgoing.close()
 
     sewage_outgoing = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sewage_outgoing.connect(("10.0.56.66", 1112))
+    sewage_outgoing.connect(("10.0.56.235", 1112))
     header.type = 0
     header.size = 8 + 8*len(liquid.data)
     sewage_outgoing.send(header.serialize())
