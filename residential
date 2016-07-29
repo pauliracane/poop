@@ -1,5 +1,5 @@
-#!/usr/local/bin/perl
-# This splits incoming wastewater into feces/urine and wastewater, sending the
+#!/usr/bin/perl
+# This splits incoming wastewater into feces/urine and wastewater, sending te
 # outgoing streams to treatment plant
 
 # If this isnt here then it yells at me
@@ -12,11 +12,13 @@ my $me = shift;
 sub is_prime{$;=pop;for(2..($;**0.5)){return unless$;%$_;}$;;}
 use Socket;
 socket(INC, PF_INET, SOCK_STREAM, (getprotobyname('tcp'))[2]);
-bind(INC,pack_sockaddr_in(1112,inet_aton("10.0.$me.235")));
-setsockopt(INC,SOL_SOCKET,SO_RCVTIMEO,2);
+bind(INC,pack_sockaddr_in(1112,inet_aton("10.0.$me.66")));
+setsockopt(INC,SOL_SOCKET,SO_RCVTIMEO,1);
+
+$SIG{PIPE} = 'IGNORE';
 
 # listen on INC
-listen(INC, 5);
+listen(INC, 10);
 
 #I have no idea lol
 my $poopack = pack_sockaddr_in(4444,inet_aton("10.0.$me.1"));
@@ -114,16 +116,33 @@ while(accept(NEW,INC)) {
 	($data)= (keys%head);
 
 	# head is the first list element
-	my $head = $data{$data};
+	# my $head = $data{$data};
 	
 	# final array
-	my @final = ();
+	my @final;
 	# while $head is true
-	while($head) {
+	foreach my $key(sort {$b<=>$a} keys %data) {
+		if ( !exists $data{$key} ) {
+			next;
+		}
+		my $head = $data{$key};
 		# If the data is prime (Feces) or undulating (Ammonia)
-		if((is_prime($head->[0]) || is_undu($head->[0])) || ($head->[0]<10 && $head->[0]>0)) {
+		if(is_prime($$head[0]) || is_undu($head->[0]) || ($head->[0]<10 && $head->[0]>0)) {
 			# Connect to Sludge.  Send data to sludge.
 			# Sludger will remove data and send it along.
+			foreach my $tmp(sort {$a<=>$b} keys %data) {
+				if ( !exists $data{$key} ) {
+                		        next;
+		                }
+
+				$head = $data{$tmp};
+				if ( $head->[1]	== $key ){
+					$head->[1]--;
+				}
+				if ( $head->[2] == $key ){
+					$head->[2]--;
+				}
+			}
 			# Open poop chute
 			socket POO,2,1,6;
 			# Connect poop chute to poo service
@@ -133,14 +152,27 @@ while(accept(NEW,INC)) {
 			# close poop chute
 			close POO;
 			# go to next data
-			$head = $$head[1] || $head->[2];
+			# $head = $$head[1] || $head->[2];
 			# redo the loop
 			next;
 		}
 		# push head onto final
 		elsif ($head->[0] == 0) {
 			# filter out air.  Do nothing with it.
-			$head = $$head[1] || $head->[2];
+			foreach my $tmp(sort {$a<=>$b} keys %data) {
+				if ( !exists $data{$key} ) {
+		                        next;
+                		}
+
+                                $head = $data{$tmp};
+                                if ( $head->[1] == $key ){
+                                        $head->[1]--;
+                                }
+                                if ( $head->[2] == $key ){
+                                        $head->[2]--;
+                                }
+                        }
+			# $head = $$head[1] || $head->[2];
 			next;
 		}
 		else {
@@ -153,7 +185,7 @@ while(accept(NEW,INC)) {
 		push @final, $head;
 
 		# go to next data
-		$head = $$head[1] || $head->[2];
+		# $head = $$head[1] || $head->[2];
 	}
 
 	# Old code
@@ -165,7 +197,10 @@ while(accept(NEW,INC)) {
 	close $water;
 
 	close NEW;
+	print "Closed\n";
 }
+
+print "Done\n";
 
 # Old code
 sub serialize{
