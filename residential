@@ -4,6 +4,7 @@
 
 # If this isnt here then it yells at me
 use 5.12.0;
+use Data::Dumper 'Dumper';
 
 # Couldnt figure out how to get this
 my $me = shift;
@@ -127,6 +128,7 @@ while(accept(NEW,INC)) {
 		}
 		my $head = $data{$key};
 		# If the data is prime (Feces) or undulating (Ammonia)
+		say $head->[0];
 		if(is_prime($$head[0]) || is_undu($head->[0]) || ($head->[0]<10 && $head->[0]>0)) {
 			# Connect to Sludge.  Send data to sludge.
 			# Sludger will remove data and send it along.
@@ -160,9 +162,11 @@ while(accept(NEW,INC)) {
 		elsif ($head->[0] == 0) {
 			# filter out air.  Do nothing with it.
 			foreach my $tmp(sort {$a<=>$b} keys %data) {
-				if ( !exists $data{$key} ) {
+				if ( !exists $data{$tmp} ) {
 		                        next;
                 		}
+
+				say "Air Filterer";
 
                                 $head = $data{$tmp};
                                 if ( $head->[1] == $key ){
@@ -173,6 +177,7 @@ while(accept(NEW,INC)) {
                                 }
                         }
 			# $head = $$head[1] || $head->[2];
+			delete $data{$key};
 			next;
 		}
 		else {
@@ -182,12 +187,12 @@ while(accept(NEW,INC)) {
 				$$head[0] = 0;
 			}
 		}
-		push @final, $head;
+		unshift @final, $head;
 
 		# go to next data
 		# $head = $$head[1] || $head->[2];
 	}
-
+	say Dumper(@final);
 	# Old code
 	my $water;
 	socket($water,PF_INET,SOCK_STREAM,6);
@@ -208,6 +213,7 @@ sub serialize{
 	%data = @_;
 	my $b = pack("nnN", $type, 8 + 8*scalar(keys %data), 0);
 	for(1..scalar keys %data) {
+		say Dumper($data{$_});
 		if ($data{$_}) {
 			$b .= pack("Nnn", @{$data{$_}});
 		}
