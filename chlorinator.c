@@ -1,8 +1,8 @@
-
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-
+#include <string.h>
+#include <stdlib.h>
 #include <arpa/inet.h>
 
 #include "networking.h"
@@ -72,12 +72,23 @@ int main(void)
 		}
 		if ( payload )
 		{
+			
+			char *full_payload = calloc(ntohs(head.size)+1, 1);
+			if ( ! full_payload ) {
+				perror("Error allocating memory for payload");
+				return -15;
+			}
+			memcpy(full_payload, &head, sizeof(head));
+			memcpy(full_payload + sizeof(head), payload, sizeof(*payload)*(ntohs(head.size)-8)/8);
+			write(owater, full_payload,ntohs(head.size)); 
+			/*
 			write(owater, &head, sizeof(head));
 			// First node is empty just to make offsets easier
 			int errcode = write(owater, payload + 1, bytes_to_read);
 			if ( errcode < 0 ){
-				perror("Fuck this");
+				perror("Pipe closed by foreign host.");
 			}
+			*/
 		}
 		close(owater);
 
