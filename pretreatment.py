@@ -30,24 +30,19 @@ while True:
     # Find out if trash; 2 for data, 1 for l, 1 for right.
     # If L or R point to # > header.size-8 / 4; scrap packet.
     # Needs to use structs.  Not sure how.  Oh well.
-    for value in range(0, len(buf), 2):
-        if ( buf ):
-            if (value%8 == 4 or value%8 == 6):
-                V = struct.unpack("!" + "H",buf[value:value+2])
-                if ( V[0] > int((header.size - 8) / 8)):
-                    #Send packet to downstream.  Continue at while True.
-                    print("Trash Packet.")
-                    trsh_out = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    trsh_out.connect(("downstream", 2222))
-                    header.type = 1
-                    trsh_out.send(header.serialize())
-                    trsh_out.send(buf)
-                    trsh_out.close()
-                    client.close()
-                    buf = b""
+    if(liquid.trash()):
+        #Send packet to downstream.  Continue at while True.
+        print("Trash Packet.")
+        trsh_out = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        trsh_out.connect(("downstream", 2222))
+        header.type = 1
+        trsh_out.send(header.serialize())
+        trsh_out.send(buf)
+        trsh_out.close()
+        client.close()
+        buf = b""
     if ( not buf):
         continue;
-
 
     liquid.treat_hg()
     print("Found {} after mercury".format(len(liquid.hazmats)))

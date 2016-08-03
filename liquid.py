@@ -78,6 +78,11 @@ class Liquid:
                     #Remove Thingo Make Air.
                     self.hazmats.add(each[0])
                     each[0]=0
+    def trash(self):
+        for key, each in self.data.items():
+            if (each[1] > self.slots or each[2] > self.slots):
+                return True
+        return False
 
     def serialize_water(self):
         for n in range(self.slots):
